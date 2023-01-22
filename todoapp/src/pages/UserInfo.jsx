@@ -1,26 +1,22 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { auth } from "./../services/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { toast } from "react-toastify";
 import Lottie from "lottie-react";
-import animation from "../assets/todo.json";
+import animation from "../assets/user.json";
 import { HashLoader } from "react-spinners";
+import { toast } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
+import { auth, db } from "../services/firebase";
+import { setDoc, doc } from "firebase/firestore";
 
-export default function SignUp() {
+export default function UserInfo() {
   const [data, setData] = useState({
-    email: "",
-    password: "",
-    confirmPwd: "",
+    nom: "",
+    prenom: "",
+    numero: "",
   });
   const [show, setShow] = useState(false);
-  const navigate = useNavigate();
+  const navigation = useNavigate();
 
-  /**
-   * This function is used to handle the change of the input
-   * @param {event} e
-   */
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
@@ -29,114 +25,88 @@ export default function SignUp() {
    * This function is used to handle the submit of the form
    * @param {form event} e
    */
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setShow(true);
-    if (data.email === "" || data.password === "" || data.confirmPwd === "") {
+    console.log(data);
+    if (data.nom === "" || data.prenom === "" || data.numero === "") {
       toast.error("Veuillez remplir tous les champs");
-      setShow(false);
-    } else if (data.password !== data.confirmPwd) {
-      toast.error("Les mots de passe ne correspondent pas");
-      setShow(false);
     } else {
-      setShow(true);
-      createUserWithEmailAndPassword(auth, data.email, data.password)
-        .then((userCredential) => {
-          // Signed in
-          const user = userCredential.user;
-
-          localStorage.setItem("userCredintial", JSON.stringify(user));
-          toast.success("Compte créé avec succès");
-          setTimeout(() => {
-            navigate("/confirmation");
-          }, 2000);
+      await setDoc(doc(db, "users", auth.currentUser.uid), data)
+        .then((res) => {
+          setShow(false);
+          navigation("/dashboard");
         })
         .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log(errorCode, " et ", errorMessage);
-          if (errorCode === "auth/email-already-in-use") {
-            toast.error("Cette adresse mail est déjà utilisée");
-            setShow(false);
-          }
-          if (errorCode === "auth/invalid-email") {
-            toast.error("Cette adresse mail n'est pas valide");
-            setShow(false);
-          }
-          if (errorCode === "auth/weak-password") {
-            toast.error("Le mot de passe doit contenir au moins 6 caractères");
-            setShow(false);
-          }
-          if (errorCode === "auth/network-request-failed") {
-            toast.error("Veuillez verifier votre connexion internet");
-            setShow(false);
-          }
+          toast.error("Une erreur est survenue");
+          console.error("Error writing document: ", error);
         });
     }
   };
   return (
-    <LoginStyle>
+    <ConfirmationContainer>
       <div className="container">
         <div className="header">
           <div className="logo">
             <Lottie animationData={animation} className="lottie" />
           </div>
-          <h1>Inscription</h1>
-          <p>Bienvenue sur votre manageur de tache</p>
+          <h1>Confirmation</h1>
+          <p>
+            Votre compte a été créé avec succès ! Veuillez configurer vos
+            identifiants
+          </p>
         </div>
         <form action="" onSubmit={handleSubmit}>
           <div className="input-group">
-            <label htmlFor="email">Votre adresse mail </label>
+            <label htmlFor="prenom">Votre prenom </label>
             <input
-              type="email"
-              name="email"
-              id="email"
-              placeholder="test@gmail.com"
-              min={6}
+              type="text"
+              name="prenom"
+              id="prenom"
+              placeholder="Richard"
+              min={4}
               onChange={handleChange}
-              value={data.email}
+              required
+              value={data.prenom}
             />
           </div>
           <div className="input-group">
-            <label htmlFor="password">Votre mot de passe</label>
+            <label htmlFor="nom">Votre nom complet</label>
             <input
-              type="password"
-              name="password"
-              id="password"
-              placeholder="*******"
+              type="text"
+              name="nom"
+              id="nom"
+              placeholder="Asumani Kalyo Josué"
               min={6}
+              required
               onChange={handleChange}
-              value={data.password}
+              value={data.nom}
             />
           </div>
           <div className="input-group">
-            <label htmlFor="password">Confirmer votre mot de passe</label>
+            <label htmlFor="numero">Votre numéro :</label>
             <input
-              type="password"
-              name="confirmPwd"
-              id="password"
-              placeholder="*******"
+              type="tel"
+              name="numero"
+              id="numero"
+              placeholder="+243 999 999 999"
               min={6}
+              required
               onChange={handleChange}
-              value={data.confirmPwd}
+              value={data.numero}
             />
           </div>
           <button type="submit" className="btn">
             {show ? <HashLoader color="#fff" size={20} /> : null}
-            {!show ? "Connexion" : null}
+            {!show ? "Valider" : null}
           </button>
         </form>
-        <div className="footer">
-          <p>
-            Avez-vous un compte ? Cliquez <Link to="/">ici</Link>{" "}
-          </p>
-        </div>
       </div>
-    </LoginStyle>
+    </ConfirmationContainer>
   );
 }
 
-const LoginStyle = styled.div`
+const ConfirmationContainer = styled.div`
   width: 100%;
   height: 100vh;
   display: flex;
@@ -156,7 +126,7 @@ const LoginStyle = styled.div`
     animation: slide 0.5s ease-in-out;
     @keyframes slide {
       0% {
-        transform: translateY(400px);
+        transform: translateY(-300px);
         opacity: 0.3;
       }
       100% {
@@ -207,7 +177,7 @@ const LoginStyle = styled.div`
       width: 90%;
       margin: auto;
       margin-top: 2rem;
-
+      padding-bottom: 1rem;
       .input-group {
         margin-bottom: 1rem;
         input {

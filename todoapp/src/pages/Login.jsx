@@ -4,12 +4,16 @@ import { toast } from "react-toastify";
 import styled from "styled-components";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../services/firebase";
+import Lottie from "lottie-react";
+import animation from "../assets/todo.json";
+import { HashLoader } from "react-spinners";
 
 export default function Login() {
   const [data, setData] = useState({
     email: "",
     password: "",
   });
+  const [show, setShow] = useState(false);
   const navigate = useNavigate();
   /**
    * This function is used to handle the change of the input
@@ -25,20 +29,41 @@ export default function Login() {
    */
   const handleSubmit = (e) => {
     e.preventDefault();
+    setShow(true);
     if (data.email === "" || data.password === "") {
       toast.error("Veuillez remplir tous les champs");
+      setShow(false);
     } else {
       signInWithEmailAndPassword(auth, data.email, data.password)
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
-          // navigate("/home");
+
+          localStorage.setItem("userCredintial", JSON.stringify(user));
+          setShow(false);
+          navigate("/dashboard");
           console.log(user);
         })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
           console.log(errorCode, errorMessage);
+          if (errorCode === "auth/wrong-password") {
+            toast.error("Mot de passe incorect");
+            setShow(false);
+          }
+          if (errorCode === "auth/invalid-email") {
+            toast.error("Cette adresse mail n'est pas valide");
+            setShow(false);
+          }
+          if (errorCode === "auth/weak-password") {
+            toast.error("Le mot de passe doit contenir au moins 6 caractères");
+            setShow(false);
+          }
+          if (errorCode === "auth/network-request-failed") {
+            toast.error("Veuillez verifier votre connexion internet");
+            setShow(false);
+          }
         });
     }
     console.log(data);
@@ -47,6 +72,9 @@ export default function Login() {
     <LoginStyle>
       <div className="container">
         <div className="header">
+          <div className="logo">
+            <Lottie animationData={animation} className="lottie" />
+          </div>
           <h1>Connexion</h1>
           <p>Bienvenue encore et hereux de vous revoir</p>
         </div>
@@ -76,7 +104,8 @@ export default function Login() {
             />
           </div>
           <button type="submit" className="btn">
-            Connexion
+            {show && <HashLoader color="#fff" size={20} />}
+            {!show && "Connexion"}
           </button>
         </form>
         <div className="footer">
@@ -105,9 +134,49 @@ const LoginStyle = styled.div`
     border-radius: 5px;
     color: #fff;
     padding: 1rem;
+    animation: slide 0.5s ease-in-out;
+    @keyframes slide {
+      0% {
+        transform: translateY(-200px);
+        opacity: 0.3;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    p,
+    h1,
+    label {
+      animation: apa 0.5s ease-in-out;
+
+      @keyframes apa {
+        0% {
+          transform: translateX(-200px);
+          opacity: 0;
+        }
+        100% {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+    }
 
     .header {
       text-align: center;
+      .logo {
+        width: 100%;
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        .lottie {
+          width: 130px;
+        }
+      }
       h1 {
         text-align: center;
         padding: 5px;
@@ -141,6 +210,9 @@ const LoginStyle = styled.div`
         cursor: pointer;
         font-weight: 600;
         color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
     }
     .footer {
@@ -175,6 +247,9 @@ const LoginStyle = styled.div`
           input {
             height: 45px;
           }
+        }
+        button: {
+          height: 50px;
         }
       }
     }
