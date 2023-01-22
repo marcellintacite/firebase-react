@@ -54,6 +54,8 @@ const NavbarContainer = styled.div`
   padding-left: 1rem;
   padding-right: 1rem;
   justify-content: space-between;
+  box-shadow: 1px 5px 5px #2224;
+  z-index: 1000;
 
   .left {
     span {

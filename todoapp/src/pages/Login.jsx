@@ -64,6 +64,10 @@ export default function Login() {
             toast.error("Veuillez verifier votre connexion internet");
             setShow(false);
           }
+          if (errorCode === "auth/user-not-found") {
+            toast.error("L'utilisateur n'existe pas");
+            setShow(false);
+          }
         });
     }
     console.log(data);

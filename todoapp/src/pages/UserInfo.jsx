@@ -13,6 +13,7 @@ export default function UserInfo() {
     nom: "",
     prenom: "",
     numero: "",
+    tasks: [],
   });
   const [show, setShow] = useState(false);
   const navigation = useNavigate();

@@ -14,5 +14,6 @@ export default function MainContent() {
 
 const ContainerStyled = styled.div`
   width: 100%;
+  height: 90vh;
   display: flex;
 `;

@@ -1,58 +1,93 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { HashLoader } from "react-spinners";
+import { doc, updateDoc, arrayUnion } from "firebase/firestore";
+import { db } from "../services/firebase";
+import Lottie from "lottie-react";
+import success from "../assets/success.json";
 
 export default function AddTask({ showAdd, setShowAdd }) {
   const [loading, setShow] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const [data, setData] = useState({
     titre: "",
     description: "",
+    done: false,
+    time: new Date(),
   });
 
   const handleChange = (e) => {
     const ndata = { ...data, [e.target.name]: e.target.value };
     setData(ndata);
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setShow(true);
+    const uid = JSON.parse(localStorage.getItem("userCredintial")).uid;
+    const usersRef = doc(db, "users", uid);
+
+    // Atomically add a new region to the "regions" array field.
+    await updateDoc(usersRef, {
+      tasks: arrayUnion(data),
+    }).then(() => {
+      setShow(false);
+      setShowSuccess(true);
+      setTimeout(() => {
+        setShowSuccess(false);
+        setShowAdd(false);
+      }, 3000);
+      setData({
+        titre: "",
+        description: "",
+        done: false,
+      });
+    });
   };
   return (
     <>
       {showAdd && (
         <StyledAdd>
           <div className="container">
-            <h2>Ajouter une tache</h2>
-            <form action="" onSubmit={handleSubmit}>
-              <div className="form_group">
-                <label htmlFor="titre">Titre tache</label>
-                <input
-                  type="text"
-                  name="titre"
-                  id=""
-                  placeholder="partir à l'eglise"
-                  value={data.titre}
-                  required
-                  onChange={(e) => handleChange(e)}
-                />
+            {showSuccess && (
+              <div className="success">
+                <Lottie animationData={success} color="#fff" size={20} />
               </div>
-              <div className="form_group">
-                <label htmlFor="description">Déscription de la tache</label>
-                <textarea
-                  type="text"
-                  name="description"
-                  id=""
-                  placeholder="Ceci est un exemple"
-                  value={data.description}
-                  onChange={(e) => handleChange(e)}
-                  required
-                />
+            )}
+            {!showSuccess && (
+              <div>
+                <h2>Ajouter une tache</h2>
+                <form action="" onSubmit={handleSubmit}>
+                  <div className="form_group">
+                    <label htmlFor="titre">Titre tache</label>
+                    <input
+                      type="text"
+                      name="titre"
+                      id=""
+                      placeholder="partir à l'eglise"
+                      value={data.titre}
+                      required
+                      onChange={(e) => handleChange(e)}
+                    />
+                  </div>
+                  <div className="form_group">
+                    <label htmlFor="description">Déscription de la tache</label>
+                    <textarea
+                      type="text"
+                      name="description"
+                      id=""
+                      placeholder="Ceci est un exemple"
+                      value={data.description}
+                      onChange={(e) => handleChange(e)}
+                      required
+                    />
+                  </div>
+                  <button type="submit">
+                    {!loading && "Enreigistrer"}
+                    {loading && <HashLoader color="#fff" size={20} />}
+                  </button>
+                </form>
               </div>
-              <button type="submit">
-                {!loading && "Enreigistrer"}
-                {loading && <HashLoader color="#fff" size={20} />}
-              </button>
-            </form>
+            )}
             <div className="close" onClick={() => setShowAdd(false)}>
               <span className="fa fa-times"></span>
             </div>
