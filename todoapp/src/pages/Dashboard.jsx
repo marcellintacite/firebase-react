@@ -11,17 +11,12 @@ import AddTask from "../Components/AddTask";
 export default function Dashboard() {
   const navigation = useNavigate();
   const [show, setShow] = useState(false);
-  const [showAdd, setShowAdd] = useState(false);
+  const [popup, setPopup] = useState(false);
   useEffect(() => {
     document.title = "Tableau de bord";
+    const uid = JSON.parse(localStorage.getItem("userCredintial")).uid;
     const getData = async () => {
-      const docRef = doc(
-        db,
-        "users",
-        auth.currentUser.uid
-          ? auth.currentUser.uid
-          : JSON.parse(localStorage.getItem("userCredintial").uid)
-      );
+      const docRef = doc(db, "users", uid);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         console.log("Document data:", docSnap.data());
@@ -39,10 +34,10 @@ export default function Dashboard() {
     <DashboardContainer>
       {show && (
         <>
-          <Navbar />
+          <Navbar setShow={setPopup} />
           <MainContent />
 
-          {showAdd && <AddTask />}
+          <AddTask showAdd={popup} setShowAdd={setPopup} />
         </>
       )}
       {!show && (

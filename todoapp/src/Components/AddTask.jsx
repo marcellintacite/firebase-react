@@ -1,20 +1,72 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { HashLoader } from "react-spinners";
 
-export default function AddTask() {
+export default function AddTask({ showAdd, setShowAdd }) {
+  const [loading, setShow] = useState(false);
+  const [data, setData] = useState({
+    titre: "",
+    description: "",
+  });
+
+  const handleChange = (e) => {
+    const ndata = { ...data, [e.target.name]: e.target.value };
+    setData(ndata);
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setShow(true);
+  };
   return (
-    <StyledAdd>
-      <div className="container">
-        <h1>AddTask</h1>
-      </div>
-    </StyledAdd>
+    <>
+      {showAdd && (
+        <StyledAdd>
+          <div className="container">
+            <h2>Ajouter une tache</h2>
+            <form action="" onSubmit={handleSubmit}>
+              <div className="form_group">
+                <label htmlFor="titre">Titre tache</label>
+                <input
+                  type="text"
+                  name="titre"
+                  id=""
+                  placeholder="partir à l'eglise"
+                  value={data.titre}
+                  required
+                  onChange={(e) => handleChange(e)}
+                />
+              </div>
+              <div className="form_group">
+                <label htmlFor="description">Déscription de la tache</label>
+                <textarea
+                  type="text"
+                  name="description"
+                  id=""
+                  placeholder="Ceci est un exemple"
+                  value={data.description}
+                  onChange={(e) => handleChange(e)}
+                  required
+                />
+              </div>
+              <button type="submit">
+                {!loading && "Enreigistrer"}
+                {loading && <HashLoader color="#fff" size={20} />}
+              </button>
+            </form>
+            <div className="close" onClick={() => setShowAdd(false)}>
+              <span className="fa fa-times"></span>
+            </div>
+          </div>
+        </StyledAdd>
+      )}
+    </>
   );
 }
 
 const StyledAdd = styled.div`
-  width: 500px;
+  width: 400px;
   margin: auto;
-  height: 400px;
+  height: 0;
   display: flex;
   background-color: #20212c;
   border-radius: 10px;
@@ -24,14 +76,102 @@ const StyledAdd = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  animation: apa 0.4s ease-in;
+  animation: apa 0.3s ease-in;
+  padding-bottom: 1rem;
+  height: 440px;
 
   @keyframes apa {
     0% {
-      width: 0;
+      height: 0;
     }
     100% {
-      width: 500px;
+      height: 500px;
+    }
+  }
+
+  .container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    padding: 10px;
+    .close {
+      background: linear-gradient(90deg, #f1769d 0%, #961883 100%);
+      position: absolute;
+      cursor: pointer;
+      color: #fff;
+      top: -20px;
+      right: -10px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    h2 {
+      text-align: center;
+      color: #fff;
+      padding: 10px;
+      padding-top: 20px;
+    }
+    form {
+      width: 90%;
+      margin: auto;
+      margin-top: 1rem;
+      color: #fff;
+      .form_group {
+        margin-top: 1rem;
+        input,
+        textarea {
+          width: 100%;
+          height: 40px;
+          margin-top: 0.3rem;
+          border: none;
+          outline: none;
+          border-radius: 5px;
+          padding: 0 0.4rem;
+          background-color: #17181f;
+          color: #fff;
+        }
+        textarea {
+          height: 150px;
+          padding: 10px;
+          resize: none;
+        }
+      }
+      button {
+        width: 100%;
+        margin-top: 15px;
+        height: 45px;
+        background-color: #f1769d;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        .load {
+          width: 20px;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    width: 95%;
+    .container {
+      padding: 0;
+      form {
+        width: 95%;
+        .form_group {
+          input {
+            height: 50px;
+          }
+        }
+      }
     }
   }
 `;

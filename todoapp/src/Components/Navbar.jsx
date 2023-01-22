@@ -3,7 +3,7 @@ import Avatar from "react-avatar";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-export default function Navbar() {
+export default function Navbar({ setShow: setShowAdd }) {
   const user = JSON.parse(localStorage.getItem("user"));
   const [show, setShow] = useState(false);
 
@@ -13,7 +13,7 @@ export default function Navbar() {
         <span className="fa fa-align-justify"></span>
       </div>
       <div className="right">
-        <div className="add">
+        <div className="add" onClick={() => setShowAdd(true)}>
           <span className="fa fa-plus"></span>
         </div>
         <div className="user">
