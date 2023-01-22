@@ -1,0 +1,116 @@
+@import url('https://fonts.googleapis.com/css2?family=Sanchez&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Sanchez', serif;
+}
+
+.body {
+   width: 100%;
+   position: relative;
+   min-height: 100vh;
+}
+
+.body .navbar_c {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    background-color: #581a29;
+}
+
+.navbar_c .icon {
+    color: #fff;
+    position: absolute;
+    right: 20px;
+    font-size: 20px;
+    cursor: pointer;
+    display: none;
+}
+.navbar_c a {
+    text-decoration: none;
+    padding: 5px 5px;
+    color: #fff;
+    margin: 5px;
+}
+.container-fluid {
+    min-height: 95vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background: linear-gradient(230deg, rgba(0, 0, 0, 0.363),rgba(0, 0, 0, 0.483)), url("../src/assets/1.jpg");
+    background-position:center;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.add {
+    width: 350px;
+}
+.add h2 {
+    text-align: center;
+}
+.add form {
+}
+.add form label {
+    padding-bottom: 5px;
+}
+.add form .form-control {
+    margin-bottom: 5px;
+}
+
+.add form .form-control.po {
+    height: 80px;
+}
+
+.container-fluid .login {
+    width: 400px;
+    background-color: rgba(255, 255, 255, 0.548);
+    padding: 10px;
+    border-radius: 10px;
+}
+.login h2 {
+    text-align: center;
+}
+.login form {
+    width: 80%;
+    margin: auto;
+    margin-top: 10px;
+}
+
+.login form .btn {
+    width: 100%;
+}
+
+
+
+@media screen and (max-width:600px) {
+    .navbar_c {
+        position: sticky;
+        width: 100%;
+        height: 100vh;
+        overflow: visible;
+    }
+    .navbar_c .links {
+        display: none;
+    }
+
+    .navbar_c .links.active {
+        display: flex;
+        width: 100%;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+    }
+    .navbar_c .icon {
+        display: block;
+    }
+
+    .navbar_c .icon.active {
+        display: block;
+    }
+}
