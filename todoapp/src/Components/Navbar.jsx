@@ -3,14 +3,21 @@ import Avatar from "react-avatar";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-export default function Navbar({ setShow: setShowAdd }) {
+export default function Navbar({ setShow: setShowAdd, setActiveDash, active }) {
   const user = JSON.parse(localStorage.getItem("user"));
   const [show, setShow] = useState(false);
+
+  const handleOpen = () => {
+    setActiveDash(!active);
+  };
 
   return (
     <NavbarContainer>
       <div className="left">
-        <span className="fa fa-align-justify"></span>
+        <span
+          className={active ? "fa fa-times" : "fa fa-align-justify"}
+          onClick={handleOpen}
+        ></span>
       </div>
       <div className="right">
         <div className="add" onClick={() => setShowAdd(true)}>
@@ -60,6 +67,8 @@ const NavbarContainer = styled.div`
   .left {
     span {
       font-size: 1.2rem;
+      padding: 5;
+      cursor: pointer;
     }
   }
 

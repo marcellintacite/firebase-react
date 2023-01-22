@@ -13,6 +13,7 @@ export default function AddTask({ showAdd, setShowAdd }) {
     titre: "",
     description: "",
     done: false,
+    data: "",
     time: new Date(),
   });
 
@@ -81,6 +82,19 @@ export default function AddTask({ showAdd, setShowAdd }) {
                       required
                     />
                   </div>
+
+                  <div className="form_group">
+                    <label htmlFor="date">Date et heure</label>
+                    <input
+                      type="datetime-local"
+                      name="date"
+                      id=""
+                      placeholder="14/12/2021 12:00"
+                      value={data.date}
+                      required
+                      onChange={(e) => handleChange(e)}
+                    />
+                  </div>
                   <button type="submit">
                     {!loading && "Enreigistrer"}
                     {loading && <HashLoader color="#fff" size={20} />}
@@ -113,7 +127,9 @@ const StyledAdd = styled.div`
   transform: translate(-50%, -50%);
   animation: apa 0.3s ease-in;
   padding-bottom: 1rem;
-  height: 440px;
+  height: 500px;
+  z-index: 100;
+  overflow: hidden;
 
   @keyframes apa {
     0% {
@@ -134,10 +150,10 @@ const StyledAdd = styled.div`
       position: absolute;
       cursor: pointer;
       color: #fff;
-      top: -20px;
-      right: -10px;
-      width: 40px;
-      height: 40px;
+      top: 10px;
+      right: 10px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
       display: flex;
       align-items: center;
