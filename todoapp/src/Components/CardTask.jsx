@@ -48,7 +48,7 @@ export default function CardTask({ data, index }) {
           <h4>{data.titre}</h4>
         </div>
         <div className="right">
-          <span className="fa fa-trash"></span>
+          <span className="fa fa-trash" onClick={handleDelete}></span>
         </div>
       </div>
       <div className="body">
