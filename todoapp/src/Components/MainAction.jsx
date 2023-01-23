@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import AddComponent from "./AddComponent";
 import CardTask from "./CardTask";
 
 export default function MainAction({ userItems }) {
-  console.log(userItems);
   return (
     <ContainerStyled>
       <div className="container_c">
@@ -15,9 +14,14 @@ export default function MainAction({ userItems }) {
             <h4>Non terminé</h4>
             <div className="cards">
               {userItems.length > 0 &&
-                userItems.map((item) => {
+                userItems.map((item, index) => {
                   return (
-                    <CardTask key={item.date} id={item.date} data={item} />
+                    <CardTask
+                      key={item.date}
+                      id={item.date}
+                      data={item}
+                      index={index}
+                    />
                   );
                 })}
             </div>

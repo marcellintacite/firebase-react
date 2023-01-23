@@ -1,11 +1,24 @@
+import moment from "moment";
 import React, { useState } from "react";
 import Avatar from "react-avatar";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-export default function Navbar({ setShow: setShowAdd, setActiveDash, active }) {
+export default function Navbar({
+  setShow: setShowAdd,
+  setActiveDash,
+  active,
+  userItems,
+}) {
   const user = JSON.parse(localStorage.getItem("user"));
   const [show, setShow] = useState(false);
+  const [showNotif, setShowNotif] = useState(false);
+  let notifications = [];
+  if (userItems.length !== 0) {
+    notifications = userItems.filter(
+      (item) => moment.now() > new Date(item.date).getTime()
+    );
+  }
 
   const handleOpen = () => {
     setActiveDash(!active);
@@ -22,6 +35,36 @@ export default function Navbar({ setShow: setShowAdd, setActiveDash, active }) {
       <div className="right">
         <div className="add" onClick={() => setShowAdd(true)}>
           <span className="fa fa-plus"></span>
+        </div>
+        <div className="notification" onClick={() => setShowNotif(!showNotif)}>
+          <span className="fa fa-bell"></span>
+          <div className="number">{notifications.length}</div>
+          {showNotif && (
+            <div
+              className={
+                showNotif
+                  ? "notification_container active"
+                  : "notification_container"
+              }
+            >
+              <div className="first">
+                <h4>Taches expirées</h4>
+                {notifications.length !== 0 &&
+                  notifications.map((item, index) => (
+                    <div key={index} className="item">
+                      <p>{item.titre}</p>
+                      <div className="footer">
+                        <span>
+                          {moment(new Date(item.date)).format(
+                            "Do MMM YYYY, h:mm:ss a"
+                          )}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
         </div>
         <div className="user">
           <Avatar
@@ -77,6 +120,89 @@ const NavbarContainer = styled.div`
     display: flex;
     align-items: center;
     position: relative;
+    gap: 5px;
+
+    .notification {
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin-left: 15px;
+      cursor: pointer;
+      margin-right: 5px;
+      background: #c9c9c92b;
+      border-radius: 10px;
+      .notification_container.active {
+        min-height: auto;
+
+        transition: all 0.4s ease-in-out;
+      }
+      .notification_container {
+        position: absolute;
+        width: 300px;
+        right: 0px;
+        min-height: 100px;
+        top: 40px;
+        background-color: #2c2d39;
+        padding: 10px;
+        border-radius: 5px;
+        z-index: 1000;
+        animation: coming 0.4s ease-in;
+
+        @media screen and (max-width: 600px) {
+          right: -85px;
+          top: 45px;
+        }
+        @keyframes coming {
+          from {
+            opacity: 0;
+            transform: translateY(100px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .item p {
+          padding-bottom: 5px;
+        }
+        .footer span {
+          color: #e45454;
+        }
+
+        h4 {
+          margin-bottom: 7px;
+        }
+        .item {
+          background-color: #20212c;
+          padding: 10px 5px;
+          border-radius: 5px;
+          margin-bottom: 10px;
+
+          &:hover {
+            background-color: #151520;
+            transition: all 0.4s ease-in-out;
+          }
+        }
+      }
+      .number {
+        top: -5px;
+        right: -3px;
+        color: #fff;
+        font-weight: 600;
+        position: absolute;
+        font-size: 11px;
+        width: 15px;
+        height: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background-color: #ff7c7c;
+      }
+    }
     .add {
       width: 30px;
       height: 30px;

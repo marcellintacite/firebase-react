@@ -1,11 +1,14 @@
 import moment from "moment/moment";
 import React, { useState } from "react";
 import styled from "styled-components";
-import Checkbox from "./Check";
+import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+
 import "moment/locale/fr";
+import { db } from "./../firebase";
+import { Checkbox } from "@mui/material";
 moment.locale("fr");
 
-export default function CardTask({ data }) {
+export default function CardTask({ data, index }) {
   const [checkedValue, setCheckedValue] = useState(data.done);
   const testDate = new Date(data.date);
   const h = moment(testDate).format("Do MMM YYYY, h:mm:ss a");
@@ -13,24 +16,40 @@ export default function CardTask({ data }) {
   const made = moment(output).fromNow();
 
   const onCheckChange = (e) => {
-    console.log(e);
     setCheckedValue(e.target.checked);
+    console.log(e.target.checked, e.target.name, " et ", index);
+  };
+
+  const handleDelete = async () => {
+    const uid = JSON.parse(localStorage.getItem("userCredintial")).uid;
+    console.log("delete");
+    const userRef = doc(db, "users", uid);
+    await updateDoc(userRef, {
+      tasks: arrayRemove(data),
+    });
   };
   return (
-    <CardContainer>
+    <CardContainer index={index}>
       <div className="head">
-        <div className="check">
-          <div class="round">
-            <input
-              type="checkbox"
-              id="checkbox"
-              value={checkedValue}
+        <div className="left">
+          <div className="check">
+            <Checkbox
               onChange={(e) => onCheckChange(e)}
+              sx={{
+                color: "#f07ea9",
+                "&.Mui-checked": {
+                  color: "#f07ea9",
+                },
+                width: 30,
+              }}
+              value={checkedValue}
             />
-            <label for="checkbox"></label>
           </div>
+          <h4>{data.titre}</h4>
         </div>
-        <h4>{data.titre}</h4>
+        <div className="right">
+          <span className="fa fa-trash"></span>
+        </div>
       </div>
       <div className="body">
         <h5>Déscription</h5>
@@ -57,56 +76,48 @@ const CardContainer = styled.div`
   margin-bottom: 1rem;
   border-radius: 10px;
   padding: 0.5rem;
+  opacity: 0;
 
+  animation: test 0.5s ease-in-out;
+  animation-delay: ${(props) => props.index * 0.3}s;
+  opacity: 1;
+  @keyframes test {
+    0% {
+      opacity: 0.4;
+      transform: translateY(140px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  &:hover {
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+    transform: scale(1.02);
+    transition: all 0.3s ease-in-out;
+    background-color: #2f303d;
+    cursor: grab;
+    margin-bottom: 2rem;
+  }
   .head {
     display: flex;
     height: 40px;
     align-items: center;
+    justify-content: space-between;
     gap: 10px;
+    .left {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .right {
+      padding-right: 10px;
 
-    .check {
-      .round {
-        position: relative;
-        width: 24px;
-        height: 24px;
-      }
-      .round label {
-        border: 1px solid #f07ea9;
-        border-radius: 50%;
+      span {
+        padding: 10px;
         cursor: pointer;
-        height: 24px;
-        left: 0;
-        position: absolute;
-        top: 0;
-        width: 24px;
-      }
-
-      .round label:after {
-        border: 2px solid #fff;
-        border-top: none;
-        border-right: none;
-        content: "";
-        height: 6px;
-        left: 4px;
-        opacity: 0;
-        position: absolute;
-        top: 6px;
-        transform: rotate(-45deg);
-        width: 12px;
-        transition: all 0.4s ease;
-      }
-
-      .round input[type="checkbox"] {
-        visibility: hidden;
-      }
-
-      .round input[type="checkbox"]:checked + label {
-        background-color: #f07ea9;
-        border-color: #f07ea9;
-      }
-
-      .round input[type="checkbox"]:checked + label:after {
-        opacity: 1;
+        color: #f07ea9;
       }
     }
 

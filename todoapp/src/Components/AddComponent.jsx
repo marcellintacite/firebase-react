@@ -158,6 +158,8 @@ const AddStyled = styled.div`
   .input {
     margin-top: 10px;
     animation: opa 0.5s ease-in-out;
+    border: 1px solid #3334;
+    border-radius: 5px;
     @keyframes opa {
       from {
         opacity: 0;

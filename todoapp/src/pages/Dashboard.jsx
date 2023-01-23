@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { ScaleLoader } from "react-spinners";
 import MainContent from "../Components/MainContent";
 import AddTask from "../Components/AddTask";
+import moment from "moment";
 
 export default function Dashboard() {
   const navigation = useNavigate();
@@ -29,10 +30,11 @@ export default function Dashboard() {
       console.log("No such document!");
     }
   };
+
   useEffect(() => {
     document.title = "Tableau de bord";
     getData();
-  }, [userItems]);
+  }, []);
   return (
     <DashboardContainer showAdd={popup}>
       {show && (
@@ -41,6 +43,7 @@ export default function Dashboard() {
             setShow={setPopup}
             setActiveDash={setActiveDash}
             active={activeDash}
+            userItems={userItems}
           />
           <MainContent active={activeDash} userItems={userItems} />
 

@@ -17,12 +17,6 @@ const Checkbox = ({ label, isChecked, handleChange }) => {
 };
 export default Checkbox;
 const StyledCheckbox = styled.div`
-  .round {
-    position: relative;
-    width: 24px;
-    height: 24px;
-  }
-
   .round label {
     border: 1px solid #f07ea9;
     border-radius: 50%;

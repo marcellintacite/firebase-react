@@ -122,21 +122,24 @@ const StyledAdd = styled.div`
   align-items: center;
   justify-content: center;
   position: absolute;
-  top: 50%;
+  top: 18%;
   left: 50%;
   transform: translate(-50%, -50%);
   animation: apa 0.3s ease-in;
   padding-bottom: 1rem;
-  height: 500px;
+  min-height: 510px;
   z-index: 100;
   overflow: hidden;
+  border: 1px solid #fff5;
 
   @keyframes apa {
     0% {
       height: 0;
+      opacity: 0;
     }
     100% {
-      height: 500px;
+      height: 510px;
+      opacity: 1;
     }
   }
 

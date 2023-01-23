@@ -9,7 +9,7 @@ export default function Sidebar({ active }) {
         <li>
           <NavLink to="/dashboard" activeClassName="active">
             <div className="icon">
-              <i className="fa fa-chart-pie"></i>
+              <i className="fa fa-home"></i>
             </div>
             <p>Dashboard</p>
           </NavLink>
@@ -36,7 +36,7 @@ const SidebarContainer = styled.div`
   background-color: #20212c;
 
   @media screen and (max-width: 768px) {
-    width: ${(props) => (props.active ? "70%" : "0%")};
+    width: ${(props) => (props.active ? "80%" : "0%")};
   }
 
   ul {
