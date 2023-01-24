@@ -26,14 +26,14 @@ export default function UserInfo() {
    * This function is used to handle the submit of the form
    * @param {form event} e
    */
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setShow(true);
     console.log(data);
     if (data.nom === "" || data.prenom === "" || data.numero === "") {
       toast.error("Veuillez remplir tous les champs");
     } else {
-      await setDoc(doc(db, "users", auth.currentUser.uid), data)
+      setDoc(doc(db, "users", auth.currentUser.uid), data)
         .then((res) => {
           setShow(false);
           navigation("/dashboard");

@@ -6,6 +6,7 @@ import Lottie from "lottie-react";
 import success from "../assets/success.json";
 import { HashLoader } from "react-spinners";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function AddComponent() {
   const [show, setShow] = useState(false);
@@ -17,6 +18,7 @@ export default function AddComponent() {
     time: new Date(),
   });
   const [loading, setLoading] = useState(false);
+  const navigation = useNavigate();
 
   const [showSuccess, setShowSuccess] = useState(false);
   const handleChange = (e) => {
@@ -36,10 +38,11 @@ export default function AddComponent() {
       .then(() => {
         setShowSuccess(true);
         setLoading(false);
+
         setTimeout(() => {
           setShowSuccess(false);
           setShow(false);
-        }, 4000);
+        }, 3000);
 
         setData({
           titre: "",

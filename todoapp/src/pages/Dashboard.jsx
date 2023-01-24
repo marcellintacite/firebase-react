@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Navbar from "../Components/Navbar";
-import { auth, db } from "../services/firebase";
+import { db } from "../services/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { ScaleLoader } from "react-spinners";
 import MainContent from "../Components/MainContent";
 import AddTask from "../Components/AddTask";
-import moment from "moment";
 
 export default function Dashboard() {
   const navigation = useNavigate();
@@ -34,7 +33,7 @@ export default function Dashboard() {
   useEffect(() => {
     document.title = "Tableau de bord";
     getData();
-  }, []);
+  }, [userItems]);
   return (
     <DashboardContainer showAdd={popup}>
       {show && (

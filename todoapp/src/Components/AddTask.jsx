@@ -122,7 +122,7 @@ const StyledAdd = styled.div`
   align-items: center;
   justify-content: center;
   position: absolute;
-  top: 18%;
+  top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
   animation: apa 0.3s ease-in;

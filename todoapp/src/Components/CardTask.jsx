@@ -6,6 +6,7 @@ import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 import "moment/locale/fr";
 import { db } from "./../firebase";
 import { Checkbox } from "@mui/material";
+import { toast } from "react-toastify";
 moment.locale("fr");
 
 export default function CardTask({ data, index }) {
@@ -26,8 +27,24 @@ export default function CardTask({ data, index }) {
     const userRef = doc(db, "users", uid);
     await updateDoc(userRef, {
       tasks: arrayRemove(data),
+    }).then(() => {
+      console.log("Document successfully deleted!");
+      toast.success("Tâche supprimée avec succès");
     });
   };
+
+  // const handleUpdate = async () => {
+  //   const uid = JSON.parse(localStorage.getItem("userCredintial")).uid;
+  //   const userRef = doc(db, "users", uid);
+  //   const ndata = { ...data, done: checkedValue };
+  //   await updateDoc(userRef, {
+  //     tasks: arrayUnion(ndata),
+  //   }).then(() => {
+  //     console.log("Document successfully deleted!");
+  //     toast.success("Tâche terminée avec succès");
+  //   });
+  // };
+
   return (
     <CardContainer index={index}>
       <div className="head">
