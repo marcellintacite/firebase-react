@@ -1,7 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import AddComponent from "./AddComponent";
 import CardTask from "./CardTask";
+import Lottie from "lottie-react";
+import empty from "../assets/empty.json";
 
 export default function MainAction({ userItems }) {
   return (
@@ -11,7 +13,7 @@ export default function MainAction({ userItems }) {
         <AddComponent />
         <div className="tasks">
           <div className="no_done">
-            <h4>Non terminé</h4>
+            {userItems.length > 0 && <h4>Non terminé</h4>}
             <div className="cards">
               {userItems.length > 0 &&
                 userItems.map((item, index) => {
@@ -24,6 +26,17 @@ export default function MainAction({ userItems }) {
                     />
                   );
                 })}
+              {userItems.length === 0 && (
+                <div className="empty">
+                  <Lottie
+                    animationData={empty}
+                    color="#fff"
+                    size={10}
+                    className="lottie"
+                  />
+                  <h4>Aucune tache</h4>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -57,6 +70,23 @@ const ContainerStyled = styled.div`
         }
         .cards {
           padding: 10px 0;
+
+          .empty {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            gap: 10px;
+            .lottie {
+              width: 35%;
+
+              @media (max-width: 768px) {
+                width: 80%;
+              }
+            }
+          }
         }
       }
     }

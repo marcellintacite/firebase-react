@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { auth } from "./../services/firebase";
@@ -16,7 +16,11 @@ export default function SignUp() {
   });
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
-
+  useEffect(() => {
+    if (localStorage.getItem("userCredintial")) {
+      navigate("/dashboard");
+    }
+  });
   /**
    * This function is used to handle the change of the input
    * @param {event} e

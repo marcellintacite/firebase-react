@@ -29,10 +29,15 @@ export default function Dashboard() {
       console.log("No such document!");
     }
   };
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.title = "Tableau de bord";
     getData();
+
+    if (!localStorage.getItem("userCredintial")) {
+      navigate("/");
+    }
   }, [userItems]);
   return (
     <DashboardContainer showAdd={popup}>
