@@ -96,7 +96,7 @@ export default function CardTask({ data, index }) {
 const CardContainer = styled.div`
   width: 100%;
   min-height: 100px;
-  background-color: ${(props) => (props.passed ? "#1b0f26" : "#20212c")};
+  background-color: ${(props) => (props.passed ? "#1b0f2670" : "#20212c")};
   background-color: ${(props) => props.done && "#7ddd7d20"};
   margin-bottom: 1rem;
   border-radius: 10px;

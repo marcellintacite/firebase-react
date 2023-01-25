@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import UserInfo from "./pages/UserInfo";
 import "react-toastify/dist/ReactToastify.css";
 import Signout from "./pages/Signout";
+import About from "./pages/About";
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
         <Route path="/inscription" element={<SignUp />} />
         <Route path="/confirmation" element={<UserInfo />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/about" element={<About />} />
         <Route path="/deconnexion" element={<Signout />} />
         <Route path="*" element={<Login />} />
       </Routes>
