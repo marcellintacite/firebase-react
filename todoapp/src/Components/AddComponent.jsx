@@ -9,17 +9,20 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 export default function AddComponent() {
+  // get the iso time string formatted for usage in an input['type="datetime-local"']
+  let tzoffset = new Date().getTimezoneOffset() * 60000; //offset in milliseconds
+  let localISOTime = new Date(Date.now() - tzoffset).toISOString().slice(0, -1);
+  let localISOTimeWithoutSeconds = localISOTime.slice(0, 16);
+
   const [show, setShow] = useState(false);
   const [data, setData] = useState({
     titre: "",
     description: "",
     done: false,
-    date: "",
+    date: localISOTimeWithoutSeconds,
     time: new Date(),
   });
   const [loading, setLoading] = useState(false);
-  const navigation = useNavigate();
-
   const [showSuccess, setShowSuccess] = useState(false);
   const handleChange = (e) => {
     const ndata = { ...data, [e.target.name]: e.target.value };
@@ -30,31 +33,37 @@ export default function AddComponent() {
     setLoading(true);
     const uid = JSON.parse(localStorage.getItem("userCredintial")).uid;
     const usersRef = doc(db, "users", uid);
-
-    // // Atomically add a new region to the "regions" array field.
-    await updateDoc(usersRef, {
-      tasks: arrayUnion(data),
-    })
-      .then(() => {
-        setShowSuccess(true);
-        setLoading(false);
-
-        setTimeout(() => {
-          setShowSuccess(false);
-          setShow(false);
-        }, 3000);
-
-        setData({
-          titre: "",
-          description: "",
-          done: false,
-        });
+    if (data.titre === "" || data.description === "" || data.date === "") {
+      toast.error("Veuillez remplir tous les champs");
+      setLoading(false);
+    } else {
+      await updateDoc(usersRef, {
+        tasks: arrayUnion(data),
       })
-      .catch((error) => {
-        console.log(error);
-        setLoading(false);
-        toast.error("Une erreur est survenue");
-      });
+        .then(() => {
+          setShowSuccess(true);
+          setLoading(false);
+
+          setTimeout(() => {
+            setShowSuccess(false);
+            setShow(false);
+          }, 2000);
+
+          setData({
+            titre: "",
+            description: "",
+            done: false,
+            date: localISOTimeWithoutSeconds,
+            time: new Date(),
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          setLoading(false);
+          toast.error("Une erreur est survenue");
+        });
+    }
+    // // Atomically add a new region to the "regions" array field.
   };
   return (
     <AddStyled>
@@ -82,6 +91,7 @@ export default function AddComponent() {
                   name="titre"
                   onChange={(e) => handleChange(e)}
                   value={data.titre}
+                  required
                 />
               </div>
               <div className="form_group">
@@ -92,6 +102,7 @@ export default function AddComponent() {
                   name="description"
                   value={data.description}
                   onChange={(e) => handleChange(e)}
+                  required
                 ></textarea>
               </div>
 
@@ -103,6 +114,7 @@ export default function AddComponent() {
                   placeholder="YY-DD-MM"
                   value={data.date}
                   onChange={(e) => handleChange(e)}
+                  required
                 />
               </div>
 

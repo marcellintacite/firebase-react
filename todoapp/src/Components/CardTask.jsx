@@ -16,6 +16,7 @@ export default function CardTask({ data, index }) {
   const output = new Date(data.time.seconds * 1000);
   const made = moment(output).fromNow();
 
+  const tes = moment.now() > new Date(data.date).getTime();
   const onCheckChange = (e) => {
     setCheckedValue(e.target.checked);
     console.log(e.target.checked, e.target.name, " et ", index);
@@ -44,9 +45,8 @@ export default function CardTask({ data, index }) {
   //     toast.success("Tâche terminée avec succès");
   //   });
   // };
-
   return (
-    <CardContainer index={index}>
+    <CardContainer index={index} done={checkedValue} passed={tes}>
       <div className="head">
         <div className="left">
           <div className="check">
@@ -63,6 +63,13 @@ export default function CardTask({ data, index }) {
             />
           </div>
           <h4>{data.titre}</h4>
+
+          {tes && (
+            <div className="valid">
+              <span className="fa fa-check"></span>
+              <p>Déjà passé</p>
+            </div>
+          )}
         </div>
         <div className="right">
           <span className="fa fa-trash" onClick={handleDelete}></span>
@@ -89,11 +96,14 @@ export default function CardTask({ data, index }) {
 const CardContainer = styled.div`
   width: 100%;
   min-height: 100px;
-  background-color: #20212c;
+  background-color: ${(props) => (props.passed ? "#1b0f26" : "#20212c")};
+  background-color: ${(props) => props.done && "#7ddd7d20"};
   margin-bottom: 1rem;
   border-radius: 10px;
+
   padding: 0.5rem;
   opacity: 0;
+  transition: all 0.3s ease;
 
   animation: test 0.5s ease-in-out;
   animation-delay: ${(props) => props.index * 0.3}s;
@@ -126,7 +136,23 @@ const CardContainer = styled.div`
     .left {
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 8px;
+      .valid {
+        padding: 6px 8px;
+        display: flex;
+        margin-right: 1rem;
+        align-items: center;
+        gap: 10;
+        border-radius: 5px;
+        background-color: #65204296;
+        background-color: ${(props) => props.done && "#7ddd7d"};
+        color: ${(props) => props.done && "#333"};
+        font-size: 11px;
+
+        p {
+          margin-left: 5px;
+        }
+      }
     }
     .right {
       padding-right: 10px;
@@ -134,6 +160,7 @@ const CardContainer = styled.div`
       span {
         padding: 10px;
         cursor: pointer;
+
         color: #f07ea9;
       }
     }
@@ -141,6 +168,8 @@ const CardContainer = styled.div`
     h4 {
       font-size: 1rem;
       font-weight: 500;
+      text-decoration: ${(props) => props.done && "line-through"};
+      color: ${(props) => props.done && "#12b164"};
     }
   }
   .body {
@@ -184,6 +213,7 @@ const CardContainer = styled.div`
       }
       &:last-child {
         color: #f07ea9;
+        color: ${(props) => props.done && "#7ddd7d"};
       }
     }
   }
